@@ -1,15 +1,15 @@
 package com.hibernate.library.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
+@Table(name = "authors")
 public class Author {
     @Id
     @GeneratedValue
@@ -18,4 +18,8 @@ public class Author {
 
     @Column(name = "name")
     private String name;
+
+    public Author(String name){
+        this.name = name;
+    }
 }

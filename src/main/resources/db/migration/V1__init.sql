@@ -1,29 +1,40 @@
 CREATE
 EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE TABLE books
-(
-    id                 UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-    name               VARCHAR(255) NOT NULL,
-    weight             FLOAT        NOT NULL,
-    binding_type       VARCHAR(255) NOT NULL,
-    type_of_book       VARCHAR(255) NOT NULL,
-    quantity_available INTEGER      NOT NULL,
-    status             VARCHAR(255) NOT NULL,
-    version            INTEGER      NOT NULL
-);
-CREATE TABLE authors
+CREATE TABLE IF NOT EXISTS authors
 (
     id   UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
     name VARCHAR(255) NOT NULL
-);
-CREATE TABLE readers
+    );
+CREATE TABLE IF NOT EXISTS readers
 (
     id   UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    library_card INTEGER UNIQUE NOT NULL
+    );
+CREATE TABLE IF NOT EXISTS books
+(
+    id            UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+    name          VARCHAR(255) NOT NULL,
+    reader_id     UUID,
+    version       INTEGER      NOT NULL,
+    constraint reader_fk foreign key (reader_id) references readers (id) on update cascade on delete cascade
 );
-CREATE TABLE authorship
+CREATE TABLE IF NOT EXISTS authorship
 (
     id        UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
     book_id   UUID NOT NULL,
-    author_id UUID NOT NULL
+    author_id UUID NOT NULL,
+    constraint book_fk foreign key (book_id) references books (id) on update cascade on delete cascade,
+    constraint author_fk foreign key (author_id) references authors (id) on update cascade on delete cascade
 );
+CREATE TABLE IF NOT EXISTS history
+(
+    id        UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+    book_id   UUID NOT NULL,
+    reader_id UUID NOT NULL,
+    borrowing_date TIMESTAMP NOT NULL,
+    return_date TIMESTAMP,
+    version INTEGER NOT NULL,
+    constraint book_fk foreign key (book_id) references books (id) on update cascade on delete cascade,
+    constraint reader_fk foreign key (reader_id) references readers (id) on update cascade on delete cascade
+    );

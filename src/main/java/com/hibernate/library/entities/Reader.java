@@ -1,16 +1,17 @@
 package com.hibernate.library.entities;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
+@Table(name = "readers")
 public class Reader {
     @Id
     @GeneratedValue
@@ -22,4 +23,9 @@ public class Reader {
 
     @Column(name = "library_card")
     private Integer libraryCard;
+
+    @OneToMany (mappedBy = "readerId")
+    private List<Book> Books;
+
+    public Reader(String name, Integer libraryCard){}
 }

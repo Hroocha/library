@@ -3,12 +3,15 @@ package com.hibernate.library.entities;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
+@Table(name = "history")
 public class History {
     @Id
     @GeneratedValue
@@ -29,6 +32,12 @@ public class History {
 
     @Version
     @Column(name = "version")
-    @Builder.Default
+//    @Builder.Default
     private Integer version = 0;
+
+    public History(UUID bookId, UUID readerId, LocalDateTime borrowingDate){
+        this.bookId = bookId;
+        this.readerId = readerId;
+        this.borrowingDate = borrowingDate;
+    }
 }
