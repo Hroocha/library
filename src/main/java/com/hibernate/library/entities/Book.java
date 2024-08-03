@@ -2,30 +2,42 @@ package com.hibernate.library.entities;
 
 import com.hibernate.library.entities.enums.TypeOfBook;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Data
 @NoArgsConstructor
 @Table(name = "books")
 public class Book {
 
+    @Getter
+    @Setter
     @Id
     @GeneratedValue
     @Column(name = "id")
     private UUID id;
 
+    @Getter
+    @Setter
     @Column(name = "name")
     private String name;
 
-    @Column(name = "reader_id")
-    private UUID readerId;
+    @Getter
+    @Setter
+    @ManyToMany(mappedBy = "books")
+    private List<Author> authors = new ArrayList<>();
 
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)   // default eager
+    @JoinColumn(name = "reader_id")
+    private Reader reader;
+
+    @Getter
+    @Setter
     @Version
     @Column(name = "version")
 //    @Builder.Default
@@ -33,7 +45,7 @@ public class Book {
 
     public Book(String name){
         this.name = name;
-        this.readerId = null;
+        this.reader = null;
     }
 
 }

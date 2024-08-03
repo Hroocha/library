@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Service
 @NoArgsConstructor
-public class LibraryServiceImpl implements LibraryService{
+public class LibraryServiceImpl implements LibraryService {
 
     @Autowired
     private AuthorRepository authorRepository;
@@ -35,17 +35,7 @@ public class LibraryServiceImpl implements LibraryService{
 
 
     @PostConstruct
-    public void process(){
-        addReader(new Reader("Волков И.П.", 33333));
-        addReader(new Reader("Дугина В.А.", 44444));
-        addReader(new Reader("Аюпов В.И.", 666666));
-        addReader(new Reader("Лукина М.П.", 88888));
-        addReader(new Reader("Хорин А.А.", 22222));
-        addReader(new Reader("Родин С.Г.", 99999));
-        addReader(new Reader("Малышев П.С.", 11111));
-        addReader(new Reader("Щепин В.П.", 55555));
-        addReader(new Reader("Тюрина Ю.И.", 77777));
-        addReader(new Reader("Ерохина О.Р.", 10101));
+    public void process() {
     }
 
     @Override
@@ -90,7 +80,7 @@ public class LibraryServiceImpl implements LibraryService{
 
     @Override
     public void deleteAuthor(Author author) {
-       authorRepository.delete(author);
+        authorRepository.delete(author);
     }
 
     @Override
@@ -110,34 +100,36 @@ public class LibraryServiceImpl implements LibraryService{
 
     @Override
     public Book takeBook(UUID reader, UUID book) throws BookException {
-        Book currentBook = checkBookAndReader(reader,book);
-        if(currentBook.getReaderId() != null){
+        Book currentBook =  getBook(book);
+        if (currentBook.getReader() != null) {
             throw new BookException("книга находится у другого читателя");
         }
-        currentBook.setReaderId(reader);
+        currentBook.setReader(getReader(reader));
         bookRepository.save(currentBook);
-        historyRepository.save(new History(currentBook.getId(),reader, LocalDateTime.now()));
+        historyRepository.save(new History(currentBook.getId(), reader, LocalDateTime.now()));
         return currentBook;
     }
 
     @Override
     public Book returnBook(UUID reader, UUID book) throws BookException {
-        Book currentBook = checkBookAndReader(reader,book);
-        if(currentBook.getReaderId() == null){
+        Book currentBook = getBook(book);
+        if (currentBook.getReader() == null) {
             throw new BookException("книга уже находится в библиотеке");
         }
-        currentBook.setReaderId(null);
+        currentBook.setReader(null);
         historyRepository.findHistoryByReturnDateIsNullAndReaderIdAndBookId
                 (reader, book).ifPresent(history -> history.setReturnDate(LocalDateTime.now()));
         //а если итория не найдена надо подумать как обработать
         return currentBook;
     }
 
-    private Book checkBookAndReader(UUID reader, UUID book) throws BookException {
-        Book currentBook = bookRepository.findById(book).orElseThrow(()->
+    private Book getBook(UUID book) throws BookException {
+        return bookRepository.findById(book).orElseThrow(() ->
                 new BookException("книга не найдена"));
-        Reader curReader = readerRepository.findById(reader).orElseThrow(() ->
+    }
+
+    private Reader getReader(UUID reader) throws BookException {
+        return readerRepository.findById(reader).orElseThrow(() ->
                 new BookException("читатель не найден"));
-        return currentBook;
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,8 +25,8 @@ public class Reader {
     @Column(name = "library_card")
     private Integer libraryCard;
 
-    @OneToMany (mappedBy = "readerId")
-    private List<Book> Books;
+    @OneToMany (mappedBy = "reader") // lazy
+    private List<Book> Books = new ArrayList<>();
 
     public Reader(String name, Integer libraryCard){}
 }
