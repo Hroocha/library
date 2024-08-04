@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,17 +18,17 @@ public class Authorship {
     @Column(name = "id")
     private UUID id;
 
-    @ManyToOne   /*(fetch = FetchType.LAZY)*/   // default eager
+    @ManyToOne  (fetch = FetchType.LAZY)  // default eager
     @JoinTable(
             name = "books",
-            joinColumns = @JoinColumn(name = "name"))
-    @Column(name = "book_id")
+            joinColumns = @JoinColumn(name = "id"))
     private Book book;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinTable(
             name = "authors",
-            joinColumns = @JoinColumn(name = "name"))
-    @Column(name = "author_id")
+            joinColumns = @JoinColumn(name = "id"))
     private Author author;
+
+
 }

@@ -14,24 +14,21 @@ import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "authors")
 public class Author {
 
-    @Getter
-    @Setter
     @Id
     @GeneratedValue
     @Column(name = "id")
     private UUID id;
 
-    @Getter
-    @Setter
     @Column(name = "name")
     private String name;
 
-    @Getter
-    @Setter
-    @ManyToMany// default lazy
+
+    @ManyToMany()// default lazy
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @JoinTable(
             name = "books_authors",

@@ -3,6 +3,8 @@ package com.hibernate.library.entities;
 import com.hibernate.library.entities.enums.TypeOfBook;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
+import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,37 +13,27 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @Table(name = "books")
+@Getter
+@Setter
 public class Book {
 
-    @Getter
-    @Setter
+
     @Id
     @GeneratedValue
     @Column(name = "id")
     private UUID id;
 
-    @Getter
-    @Setter
     @Column(name = "name")
     private String name;
 
-    @Getter
-    @Setter
+
     @ManyToMany(mappedBy = "books")
     private List<Author> authors = new ArrayList<>();
 
-    @Getter
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)   // default eager
+
+    @ManyToOne   (fetch = FetchType.LAZY)   // default eager
     @JoinColumn(name = "reader_id")
     private Reader reader;
-
-    @Getter
-    @Setter
-    @Version
-    @Column(name = "version")
-//    @Builder.Default
-    private Integer version = 0;
 
     public Book(String name){
         this.name = name;

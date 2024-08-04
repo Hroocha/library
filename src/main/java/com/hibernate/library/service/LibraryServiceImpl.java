@@ -1,20 +1,15 @@
 package com.hibernate.library.service;
 
-import com.hibernate.library.LibraryApplication;
 import com.hibernate.library.entities.Author;
 import com.hibernate.library.entities.Book;
-import com.hibernate.library.entities.History;
 import com.hibernate.library.entities.Reader;
 import com.hibernate.library.exception.BookException;
 import com.hibernate.library.repositories.*;
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,8 +25,6 @@ public class LibraryServiceImpl implements LibraryService {
     private ReaderRepository readerRepository;
     @Autowired
     private AuthorshipRepository authorshipRepository;
-    @Autowired
-    private HistoryRepository historyRepository;
 
 
     @PostConstruct
@@ -106,7 +99,6 @@ public class LibraryServiceImpl implements LibraryService {
         }
         currentBook.setReader(getReader(reader));
         bookRepository.save(currentBook);
-        historyRepository.save(new History(currentBook.getId(), reader, LocalDateTime.now()));
         return currentBook;
     }
 
@@ -117,9 +109,6 @@ public class LibraryServiceImpl implements LibraryService {
             throw new BookException("книга уже находится в библиотеке");
         }
         currentBook.setReader(null);
-        historyRepository.findHistoryByReturnDateIsNullAndReaderIdAndBookId
-                (reader, book).ifPresent(history -> history.setReturnDate(LocalDateTime.now()));
-        //а если итория не найдена надо подумать как обработать
         return currentBook;
     }
 

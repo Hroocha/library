@@ -14,6 +14,7 @@ import java.util.UUID;
 @Repository
 public interface AuthorshipRepository extends CrudRepository <Authorship, UUID> {
 
-    @Query(value = "SELECT * FROM books_authors where book_id in (:books_id)", nativeQuery = true)
-    List<Author> findAllAuthorsByBooks(@Param("books_id")Collection<UUID> books_id);
+    @Query(value = "SELECT * FROM books_authors ba join authors a on  ba.author_id = a.id " +
+            " where book_id in (:books_id)", nativeQuery = true)
+    List<Authorship> findAllAuthorsByBooks(@Param("books_id")Collection<UUID> books_id);
 }
