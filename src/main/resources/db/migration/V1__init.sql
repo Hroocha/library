@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS books
     id            UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
     name          VARCHAR(255) NOT NULL,
     reader_id     UUID,
-    version       INTEGER      NOT NULL,
     constraint reader_fk foreign key (reader_id) references readers (id) on update cascade on delete cascade
 );
 CREATE TABLE IF NOT EXISTS books_authors
